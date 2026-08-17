@@ -35,6 +35,39 @@ field.destroy();
 
 ---
 
+## 1b. Use it inside one container, not the whole page
+
+`init()` works on *any* element — it doesn't have to be a full-page
+background. Give the container a real size (width/height, not `fixed`),
+JellyfishBG fills exactly that box and clips to it.
+
+```html
+<div id="hero" style="position:relative; width:100%; height:480px;">
+  <div id="hero-jellyfish" style="position:absolute; inset:0; z-index:0;"></div>
+  <h1 style="position:relative; z-index:1;">Your content on top</h1>
+</div>
+
+<script src="dist/jellyfish-bg.min.js"></script>
+<script>
+  JellyfishBG.init('hero-jellyfish', {
+    jellyfishCount: 4,
+    particleCount: 60
+  });
+</script>
+```
+
+Notes:
+- The target container gets `position:relative` and `overflow:hidden`
+  set automatically if it's `static` — so any absolutely-positioned
+  child (your `<h1>` above, or the jellyfish div itself) stacks inside
+  it correctly.
+- Lower `jellyfishCount` / `particleCount` for small containers —
+  the defaults (8 / 160) are tuned for full-page hero sections.
+- Resizing the container (window resize, or the box itself changing
+  size) is handled automatically via `ResizeObserver`.
+
+---
+
 ## 2. Deploy it for free, so *anyone* can `<script src="...">` it
 
 You don't need to pay for hosting — a public GitHub repo plus the
