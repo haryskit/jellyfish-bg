@@ -52,13 +52,13 @@ This is exactly how particles.js and most small JS libraries do it.
    git add .
    git commit -m "Initial release"
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/jellyfish-bg.git
+   git remote add origin https://github.com/haryskit/jellyfish-bg.git
    git push -u origin main
    ```
 4. **That's it — jsDelivr is already serving your file**, free, with no
    sign-up on their side, at:
    ```
-   https://cdn.jsdelivr.net/gh/YOUR_USERNAME/jellyfish-bg@main/dist/jellyfish-bg.min.js
+   https://cdn.jsdelivr.net/gh/haryskit/jellyfish-bg@main/dist/jellyfish-bg.min.js
    ```
    Anyone can now put that URL in a `<script src="...">` tag on any site.
 
@@ -70,11 +70,11 @@ This is exactly how particles.js and most small JS libraries do it.
    ```
    Then use:
    ```
-   https://cdn.jsdelivr.net/gh/YOUR_USERNAME/jellyfish-bg@1.0.0/dist/jellyfish-bg.min.js
+   https://cdn.jsdelivr.net/gh/haryskit/jellyfish-bg@1.0.0/dist/jellyfish-bg.min.js
    ```
    `@latest` also works and always points at your newest tag:
    ```
-   https://cdn.jsdelivr.net/gh/YOUR_USERNAME/jellyfish-bg@latest/dist/jellyfish-bg.min.js
+   https://cdn.jsdelivr.net/gh/haryskit/jellyfish-bg@latest/dist/jellyfish-bg.min.js
    ```
 
 6. **Host the demo page (`index.html`) itself for free with GitHub
@@ -83,9 +83,9 @@ This is exactly how particles.js and most small JS libraries do it.
      `main` / `/ (root)`** → Save.
    - After a minute your demo is live at:
      ```
-     https://YOUR_USERNAME.github.io/jellyfish-bg/
+     https://haryskit.github.io/jellyfish-bg/
      ```
-   - Before that, update the two `YOUR_USERNAME` placeholders in
+   - Before that, update the two `haryskit` placeholders in
      `index.html` to your actual GitHub username.
 
 No credit card, no paid tier, no server to maintain — GitHub Pages and

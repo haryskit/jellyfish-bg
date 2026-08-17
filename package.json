@@ -10,7 +10,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/jellyfish-bg.git"
+    "url": "https://github.com/haryskit/jellyfish-bg.git"
   },
   "scripts": {
     "build": "terser dist/jellyfish-bg.js -c -m --comments \"/^!/\" -o dist/jellyfish-bg.min.js"

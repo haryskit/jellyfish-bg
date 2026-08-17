@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{ --foam:#dceef2; --foam-dim:rgba(220,238,242,0.6); --panel:rgba(6,16,26,0.72); }
+  :root{ --foam:#dceef2; --foam-dim:rgba(220,238,242,0.6); }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{ background:#020409; color:var(--foam); font-family:"Space Grotesk", sans-serif; }
   #bg{ position:fixed; inset:0; z-index:0; }
@@ -43,9 +43,8 @@
   section p{ color:var(--foam-dim); line-height:1.7; margin-bottom:1rem; }
 
   pre{
-    background:var(--panel); border:1px solid rgba(220,238,242,0.12); border-radius:12px;
+    background:rgba(6,16,26,0.92); border:1px solid rgba(220,238,242,0.12); border-radius:12px;
     padding:1.2rem 1.4rem; overflow-x:auto; font-size:0.82rem; line-height:1.6;
-    backdrop-filter:blur(6px);
   }
   code{ font-family:"Space Grotesk", monospace; }
   .tag{ color:#a78bfa; } .attr{ color:#5eead4; } .str{ color:#fde08a; } .cm{ color:#7d97a3; }
@@ -69,7 +68,7 @@
     <p class="sub">An animated bioluminescent jellyfish field for any page. One script tag, one line of JavaScript, zero build step.</p>
     <div class="cta">
       <a class="btn primary" href="#quick-start">Get started</a>
-      <a class="btn" href="https://github.com/YOUR_USERNAME/jellyfish-bg">View on GitHub</a>
+      <a class="btn" href="https://github.com/haryskit/jellyfish-bg">View on GitHub</a>
     </div>
   </div>
 
@@ -80,7 +79,7 @@
 <span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="str">"jellyfish-bg"</span> <span class="attr">style</span>=<span class="str">"position:fixed;inset:0;z-index:-1;"</span><span class="tag">&gt;&lt;/div&gt;</span>
 
 <span class="cm">&lt;!-- 2. the library --&gt;</span>
-<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"https://cdn.jsdelivr.net/gh/YOUR_USERNAME/jellyfish-bg@latest/dist/jellyfish-bg.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"https://cdn.jsdelivr.net/gh/haryskit/jellyfish-bg@latest/dist/jellyfish-bg.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
 
 <span class="cm">&lt;!-- 3. initialize --&gt;</span>
 <span class="tag">&lt;script&gt;</span>
@@ -128,7 +127,7 @@ field.destroy();</code></pre>
   </section>
 
   <footer>
-    MIT licensed · <a href="https://github.com/YOUR_USERNAME/jellyfish-bg">github.com/YOUR_USERNAME/jellyfish-bg</a>
+    MIT licensed · <a href="https://github.com/haryskit/jellyfish-bg">github.com/haryskit/jellyfish-bg</a>
   </footer>
 </main>
 

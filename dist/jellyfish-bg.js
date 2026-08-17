@@ -3,7 +3,7 @@
  * A self-contained, dependency-free animated bioluminescent jellyfish
  * background. Drop the script in, call JellyfishBG.init(), done.
  *
- * https://github.com/YOUR_USERNAME/jellyfish-bg
+ * https://github.com/haryskit/jellyfish-bg
  * MIT License
  */
 (function (root, factory) {
@@ -32,6 +32,8 @@
     background: ['rgba(6,20,34,1)', 'rgba(3,10,18,1)', 'rgba(2,4,9,1)'],
     godRays: true,
     sparks: true,
+    cursorGlow: true,
+    clickBursts: true,
     respectReducedMotion: true
   };
 
@@ -63,6 +65,24 @@
     cx.globalCompositeOperation = 'source-over';
   };
 
+  function Ripple(x, y, color) {
+    this.x = x; this.y = y; this.color = color;
+    this.r = 0; this.maxR = 260; this.life = 1;
+  }
+  Ripple.prototype.update = function (dt) {
+    this.r += 260 * dt;
+    this.life = 1 - this.r / this.maxR;
+  };
+  Ripple.prototype.draw = function (cx) {
+    if (this.life <= 0) return;
+    var c = this.color;
+    cx.globalCompositeOperation = 'lighter';
+    cx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + (clamp(this.life, 0, 1) * 0.55) + ')';
+    cx.lineWidth = 1.5;
+    cx.beginPath(); cx.arc(this.x, this.y, this.r, 0, Math.PI * 2); cx.stroke();
+    cx.globalCompositeOperation = 'source-over';
+  };
+
   function Jelly(field) {
     this.field = field;
     this.depth = rand(0, 1);
@@ -89,6 +109,7 @@
     this.maxHistory = 48;
     this.tilt = 0;
     this.lastPulse = undefined;
+    this.excite = 0;
   };
   Jelly.prototype.update = function (dt) {
     var f = this.field, opt = f.options, p = f.pointer;
@@ -101,7 +122,7 @@
     var thrust = Math.max(0, -pulseVel) * 1.4;
     var sway = Math.sin(this.t * this.swayFreq + this.phase) * this.swayAmp;
 
-    var pushX = 0, pushY = 0;
+    var pushX = 0, pushY = 0, exciteTarget = 0;
     if (p.active && !f.reduceMotion) {
       var dx = this.x - p.x, dy = this.y - p.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
@@ -109,8 +130,14 @@
       if (dist < R && dist > 0.001) {
         var force = (1 - dist / R) * opt.pointerStrength;
         pushX = (dx / dist) * force; pushY = (dy / dist) * force;
+        exciteTarget = 1 - dist / R;
+      } else if (dist < R * 2.4 && dist > 0.001) {
+        var curiosity = (1 - (dist - R) / (R * 1.4)) * opt.pointerStrength * 0.16;
+        pushX = -(dx / dist) * curiosity; pushY = -(dy / dist) * curiosity;
+        exciteTarget = (1 - (dist - R) / (R * 1.4)) * 0.4;
       }
     }
+    this.excite += (exciteTarget - this.excite) * 0.08;
 
     this.vx += (sway * 0.02 + pushX * 0.05 - this.vx) * 0.05;
     this.vy += (-(this.riseSpeed + thrust * 0.35) + pushY * 0.05 - this.vy) * 0.05;
@@ -138,8 +165,8 @@
   };
   Jelly.prototype.draw = function (cx) {
     var c = this.color, r = c[0], g = c[1], b = c[2];
-    var bellR = this.bell * (0.82 + this.pulse * 0.28);
-    var alpha = this.alpha;
+    var bellR = this.bell * (0.82 + this.pulse * 0.28) * (1 + this.excite * 0.12);
+    var alpha = this.alpha * (1 + this.excite * 0.7);
     var blur = (1 - this.depth) * 3;
 
     cx.save();
@@ -243,26 +270,34 @@
     this.r = rand(0.4, 1.6); this.speed = rand(0.04, 0.16); this.drift = rand(-0.08, 0.08);
     this.twinklePhase = rand(0, Math.PI * 2); this.twinkleSpeed = rand(0.3, 0.9);
     this.alpha = rand(0.12, 0.45);
+    this.excite = 0;
   };
   Mote.prototype.update = function (dt) {
     var f = this.field, p = f.pointer;
     this.y -= this.speed * dt * 60;
     this.x += this.drift * dt * 60;
+    var exciteTarget = 0;
     if (p.active && !f.reduceMotion) {
       var dx = this.x - p.x, dy = this.y - p.y;
       var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 140 && dist > 0.001) {
-        var force = (1 - dist / 140) * 0.6;
-        this.x += (dx / dist) * force; this.y += (dy / dist) * force;
+      if (dist < 160 && dist > 0.001) {
+        var force = (1 - dist / 160) * 0.6;
+        var tangent = (1 - dist / 160) * 0.35;
+        this.x += (dx / dist) * force - (dy / dist) * tangent;
+        this.y += (dy / dist) * force + (dx / dist) * tangent;
+        exciteTarget = 1 - dist / 160;
       }
     }
+    this.excite += (exciteTarget - this.excite) * 0.1;
     this.twinklePhase += dt * this.twinkleSpeed;
     if (this.y < -10) this.reset(false);
   };
   Mote.prototype.draw = function (cx) {
     var tw = (Math.sin(this.twinklePhase) + 1) / 2;
-    cx.fillStyle = 'rgba(220,238,242,' + (this.alpha * (0.4 + tw * 0.6)) + ')';
-    cx.beginPath(); cx.arc(this.x, this.y, this.r, 0, Math.PI * 2); cx.fill();
+    var a = this.alpha * (0.4 + tw * 0.6) * (1 + this.excite * 1.6);
+    var rr = this.r * (1 + this.excite * 0.8);
+    cx.fillStyle = 'rgba(220,238,242,' + clamp(a, 0, 1) + ')';
+    cx.beginPath(); cx.arc(this.x, this.y, rr, 0, Math.PI * 2); cx.fill();
   };
 
   function drawGodRays(cx, W, H, t) {
@@ -292,8 +327,9 @@
     this.reduceMotion = this.options.respectReducedMotion &&
       window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    this.pointer = { x: -9999, y: -9999, active: false };
+    this.pointer = { x: -9999, y: -9999, vx: 0, vy: 0, active: false };
     this.sparks = [];
+    this.ripples = [];
     this._destroyed = false;
 
     this._buildDOM();
@@ -321,6 +357,10 @@
       cv.style.inset = '0';
       cv.style.display = 'block';
       cv.style.pointerEvents = 'none';
+      // own compositing layer, so scroll/paint elsewhere on the page
+      // doesn't force the browser to re-rasterize the canvas
+      cv.style.willChange = 'transform';
+      cv.style.transform = 'translateZ(0)';
     });
     this.container.appendChild(this.fieldCv);
     this.container.appendChild(this.fxCv);
@@ -333,15 +373,43 @@
     this._onResize = function () { self.resize(); };
     this._onMove = function (e) {
       var rect = self.container.getBoundingClientRect();
-      self.pointer.x = e.clientX - rect.left;
-      self.pointer.y = e.clientY - rect.top;
+      var nx = e.clientX - rect.left, ny = e.clientY - rect.top;
+      self.pointer.vx = self.pointer.active ? nx - self.pointer.x : 0;
+      self.pointer.vy = self.pointer.active ? ny - self.pointer.y : 0;
+      self.pointer.x = nx; self.pointer.y = ny;
       self.pointer.active = true;
     };
     this._onLeave = function () { self.pointer.active = false; };
+    this._onDown = function (e) {
+      if (!self.options.clickBursts || self.reduceMotion) return;
+      var rect = self.container.getBoundingClientRect();
+      var x = e.clientX - rect.left, y = e.clientY - rect.top;
+      var color = pick(self.options.colors);
+      self.ripples.push(new Ripple(x, y, color));
+      for (var i = 0; i < 14; i++) {
+        var ang = rand(0, Math.PI * 2), sp = rand(0.4, 2.2);
+        var sp2 = new Spark(x, y, color);
+        sp2.vx = Math.cos(ang) * sp; sp2.vy = Math.sin(ang) * sp;
+        self.sparks.push(sp2);
+      }
+      for (var j = 0; j < self.jellies.length; j++) {
+        var jl = self.jellies[j];
+        var dx = jl.x - x, dy = jl.y - y, dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 300 && dist > 0.001) {
+          var force = (1 - dist / 300) * 4;
+          jl.vx += (dx / dist) * force; jl.vy += (dy / dist) * force;
+        }
+      }
+    };
 
+    // Bound to window/document, not the container: page content sitting on
+    // top of the background container would otherwise swallow the pointer
+    // events and the field would only react near the viewport edges.
     window.addEventListener('resize', this._onResize);
-    this.container.addEventListener('pointermove', this._onMove);
-    this.container.addEventListener('pointerleave', this._onLeave);
+    window.addEventListener('pointermove', this._onMove, { passive: true });
+    window.addEventListener('pointerdown', this._onDown, { passive: true });
+    document.documentElement.addEventListener('mouseleave', this._onLeave);
+    window.addEventListener('blur', this._onLeave);
 
     if (window.ResizeObserver) {
       this._ro = new ResizeObserver(this._onResize);
@@ -351,9 +419,14 @@
 
   Field.prototype.resize = function () {
     var rect = this.container.getBoundingClientRect();
-    this.W = rect.width || window.innerWidth;
-    this.H = rect.height || window.innerHeight;
-    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var W = rect.width || window.innerWidth;
+    var H = rect.height || window.innerHeight;
+    // Mobile browsers fire resize/ResizeObserver on scroll (address-bar
+    // show/hide); skip the (expensive) canvas reallocation when the size
+    // didn't actually change.
+    if (W === this.W && H === this.H) return;
+    this.W = W; this.H = H;
+    var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
     var self = this;
     [this.fieldCv, this.fxCv].forEach(function (cv) {
       cv.width = self.W * DPR; cv.height = self.H * DPR;
@@ -389,6 +462,28 @@
     }
 
     this.fxCx.clearRect(0, 0, this.W, this.H);
+
+    if (opt.cursorGlow && this.pointer.active && !this.reduceMotion) {
+      var pulse = 0.7 + Math.sin(now / 420) * 0.15;
+      var speedBoost = clamp(Math.sqrt(this.pointer.vx * this.pointer.vx + this.pointer.vy * this.pointer.vy) * 0.05, 0, 0.6);
+      var gr = 60 + speedBoost * 40;
+      var glow = this.fxCx.createRadialGradient(this.pointer.x, this.pointer.y, 0, this.pointer.x, this.pointer.y, gr);
+      glow.addColorStop(0, 'rgba(220,245,255,' + (0.16 * pulse + speedBoost * 0.12) + ')');
+      glow.addColorStop(0.5, 'rgba(150,220,235,' + (0.06 * pulse) + ')');
+      glow.addColorStop(1, 'rgba(150,220,235,0)');
+      this.fxCx.globalCompositeOperation = 'lighter';
+      this.fxCx.fillStyle = glow;
+      this.fxCx.beginPath(); this.fxCx.arc(this.pointer.x, this.pointer.y, gr, 0, Math.PI * 2); this.fxCx.fill();
+      this.fxCx.globalCompositeOperation = 'source-over';
+    }
+
+    for (var r = this.ripples.length - 1; r >= 0; r--) {
+      var rp = this.ripples[r];
+      if (!this.reduceMotion) rp.update(dt);
+      rp.draw(this.fxCx);
+      if (rp.life <= 0) this.ripples.splice(r, 1);
+    }
+
     for (var i = this.sparks.length - 1; i >= 0; i--) {
       var s = this.sparks[i];
       if (!this.reduceMotion) s.update(dt);
@@ -404,8 +499,10 @@
     this._destroyed = true;
     cancelAnimationFrame(this._raf);
     window.removeEventListener('resize', this._onResize);
-    this.container.removeEventListener('pointermove', this._onMove);
-    this.container.removeEventListener('pointerleave', this._onLeave);
+    window.removeEventListener('pointermove', this._onMove);
+    window.removeEventListener('pointerdown', this._onDown);
+    document.documentElement.removeEventListener('mouseleave', this._onLeave);
+    window.removeEventListener('blur', this._onLeave);
     if (this._ro) this._ro.disconnect();
     if (this.fieldCv.parentNode) this.fieldCv.parentNode.removeChild(this.fieldCv);
     if (this.fxCv.parentNode) this.fxCv.parentNode.removeChild(this.fxCv);
