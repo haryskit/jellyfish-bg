@@ -1,7 +1,8 @@
 # JellyfishBG
 
-A free, dependency-free, animated bioluminescent jellyfish background.
-Drop in one script tag, call `JellyfishBG.init()`, done — same idea as
+A free, dependency-free, animated bioluminescent underwater background —
+jellyfish, bubbles, fish, light rays, marine snow, pick any mix. Drop in
+one script tag, call `JellyfishBG.init()`, done — same idea as
 [particles.js](https://particles.js.org), but jellyfish.
 
 Pure vanilla JS. No build step, no npm required to *use* it (only to
@@ -22,8 +23,22 @@ re-minify if you edit the source).
 That's the whole API surface for the common case. `init(target, options)`
 accepts either an element id (string) or a DOM node, plus an optional
 options object — see the table in `index.html` for every option
-(`jellyfishCount`, `colors`, `driftSpeed`, `pointerStrength`, `godRays`,
-`sparks`, `respectReducedMotion`).
+(`elements`, `jellyfishCount`, `bubbleCount`, `fishCount`, `particleCount`,
+`colors`, `driftSpeed`, `pointerStrength`, `sparks`, `adaptiveQuality`,
+`respectReducedMotion`).
+
+`elements` picks which systems render — any subset of `'jellyfish'`,
+`'bubbles'`, `'fish'`, `'godRays'`, `'motes'`, from one to all five:
+
+```js
+JellyfishBG.init('jellyfish-bg', { elements: ['bubbles', 'fish'] });
+```
+
+Swap the mix later without tearing anything down:
+
+```js
+field.setElements(['jellyfish', 'motes']);
+```
 
 It returns a handle so you can clean up later (useful in SPAs):
 
