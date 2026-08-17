@@ -1,0 +1,21 @@
+{
+  "name": "jellyfish-bg",
+  "version": "1.0.0",
+  "description": "A free, dependency-free animated bioluminescent jellyfish background for any web page.",
+  "main": "dist/jellyfish-bg.js",
+  "unpkg": "dist/jellyfish-bg.min.js",
+  "jsdelivr": "dist/jellyfish-bg.min.js",
+  "files": ["dist"],
+  "keywords": ["jellyfish", "background", "canvas", "animation", "particles", "ambient"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/jellyfish-bg.git"
+  },
+  "scripts": {
+    "build": "terser dist/jellyfish-bg.js -c -m --comments \"/^!/\" -o dist/jellyfish-bg.min.js"
+  },
+  "devDependencies": {
+    "terser": "^5.0.0"
+  }
+}

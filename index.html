@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JellyfishBG — a free, dependency-free jellyfish background</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --foam:#dceef2; --foam-dim:rgba(220,238,242,0.6); --panel:rgba(6,16,26,0.72); }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ background:#020409; color:var(--foam); font-family:"Space Grotesk", sans-serif; }
+  #bg{ position:fixed; inset:0; z-index:0; }
+
+  main{ position:relative; z-index:1; }
+
+  .hero{
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:2rem;
+  }
+  .hero .eyebrow{ font-size:0.7rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--foam-dim); margin-bottom:1rem; }
+  .hero h1{
+    font-family:"Cormorant Garamond", serif; font-style:italic; font-weight:400;
+    font-size:clamp(3rem, 10vw, 6.5rem); line-height:0.95;
+    text-shadow:0 0 40px rgba(94,234,212,0.25), 0 0 90px rgba(167,139,250,0.12);
+  }
+  .hero p.sub{ margin-top:1rem; color:var(--foam-dim); max-width:38ch; }
+  .cta{ margin-top:2.2rem; display:flex; gap:0.9rem; flex-wrap:wrap; justify-content:center; }
+  .btn{
+    padding:0.75rem 1.4rem; border-radius:999px; font-size:0.82rem; letter-spacing:0.03em;
+    text-decoration:none; border:1px solid rgba(220,238,242,0.25); color:var(--foam);
+    transition:background 0.2s, border-color 0.2s;
+  }
+  .btn.primary{ background:rgba(94,234,212,0.14); border-color:rgba(94,234,212,0.4); }
+  .btn:hover{ background:rgba(220,238,242,0.1); }
+
+  section{ max-width:760px; margin:0 auto; padding:5rem 1.5rem; position:relative; }
+  section h2{
+    font-family:"Cormorant Garamond", serif; font-style:italic; font-weight:400;
+    font-size:2.2rem; margin-bottom:1.2rem;
+  }
+  section p{ color:var(--foam-dim); line-height:1.7; margin-bottom:1rem; }
+
+  pre{
+    background:var(--panel); border:1px solid rgba(220,238,242,0.12); border-radius:12px;
+    padding:1.2rem 1.4rem; overflow-x:auto; font-size:0.82rem; line-height:1.6;
+    backdrop-filter:blur(6px);
+  }
+  code{ font-family:"Space Grotesk", monospace; }
+  .tag{ color:#a78bfa; } .attr{ color:#5eead4; } .str{ color:#fde08a; } .cm{ color:#7d97a3; }
+
+  table{ width:100%; border-collapse:collapse; font-size:0.85rem; margin-top:1rem; }
+  th, td{ text-align:left; padding:0.55rem 0.7rem; border-bottom:1px solid rgba(220,238,242,0.1); }
+  th{ color:var(--foam-dim); font-weight:500; letter-spacing:0.03em; }
+
+  footer{ text-align:center; padding:3rem 1.5rem 4rem; color:var(--foam-dim); font-size:0.8rem; }
+  footer a{ color:var(--foam); }
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow">Free · open-source · no dependencies</span>
+    <h1>JellyfishBG</h1>
+    <p class="sub">An animated bioluminescent jellyfish field for any page. One script tag, one line of JavaScript, zero build step.</p>
+    <div class="cta">
+      <a class="btn primary" href="#quick-start">Get started</a>
+      <a class="btn" href="https://github.com/YOUR_USERNAME/jellyfish-bg">View on GitHub</a>
+    </div>
+  </div>
+
+  <section id="quick-start">
+    <h2>Quick start</h2>
+    <p>Add a container element and two lines of markup. That's the whole integration.</p>
+    <pre><code><span class="cm">&lt;!-- 1. a container to render into --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="str">"jellyfish-bg"</span> <span class="attr">style</span>=<span class="str">"position:fixed;inset:0;z-index:-1;"</span><span class="tag">&gt;&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- 2. the library --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"https://cdn.jsdelivr.net/gh/YOUR_USERNAME/jellyfish-bg@latest/dist/jellyfish-bg.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- 3. initialize --&gt;</span>
+<span class="tag">&lt;script&gt;</span>
+  JellyfishBG.init(<span class="str">'jellyfish-bg'</span>);
+<span class="tag">&lt;/script&gt;</span></code></pre>
+  </section>
+
+  <section>
+    <h2>Options</h2>
+    <p>Pass a second argument to <code>init()</code> to customize the field.</p>
+    <pre><code>JellyfishBG.init(<span class="str">'jellyfish-bg'</span>, {
+  jellyfishCount: <span class="attr">8</span>,
+  particleCount: <span class="attr">160</span>,
+  colors: [[<span class="attr">94,234,212</span>], [<span class="attr">167,139,250</span>]],
+  driftSpeed: <span class="attr">0.15</span>,
+  pointerStrength: <span class="attr">0.9</span>,
+  godRays: <span class="attr">true</span>,
+  sparks: <span class="attr">true</span>
+});</code></pre>
+    <table>
+      <tr><th>Option</th><th>Default</th><th>What it does</th></tr>
+      <tr><td>jellyfishCount</td><td>8</td><td>Number of jellyfish on screen</td></tr>
+      <tr><td>particleCount</td><td>160</td><td>Ambient marine-snow particles</td></tr>
+      <tr><td>colors</td><td>5 presets</td><td>Array of [r,g,b] glow colors, picked randomly per jellyfish</td></tr>
+      <tr><td>driftSpeed</td><td>0.15</td><td>Base upward swim speed</td></tr>
+      <tr><td>pointerInfluence</td><td>220</td><td>Radius (px) of pointer disturbance</td></tr>
+      <tr><td>pointerStrength</td><td>0.9</td><td>How strongly the pointer pushes jellyfish</td></tr>
+      <tr><td>godRays</td><td>true</td><td>Toggle the ambient light shafts</td></tr>
+      <tr><td>sparks</td><td>true</td><td>Toggle bioluminescent spark flashes</td></tr>
+      <tr><td>respectReducedMotion</td><td>true</td><td>Freezes animation for prefers-reduced-motion users</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Removing it</h2>
+    <p><code>init()</code> returns a handle you can use to clean up, e.g. when unmounting in a single-page app.</p>
+    <pre><code><span class="cm">const</span> field = JellyfishBG.init(<span class="str">'jellyfish-bg'</span>);
+<span class="cm">// later...</span>
+field.destroy();</code></pre>
+  </section>
+
+  <section>
+    <h2>Hosting this yourself, for free</h2>
+    <p>This whole thing is one static JS file — no server, no build pipeline, no paid hosting needed. See the README in the repo for the exact steps (GitHub + jsDelivr, both free forever on a public repo).</p>
+  </section>
+
+  <footer>
+    MIT licensed · <a href="https://github.com/YOUR_USERNAME/jellyfish-bg">github.com/YOUR_USERNAME/jellyfish-bg</a>
+  </footer>
+</main>
+
+<script src="dist/jellyfish-bg.js"></script>
+<script>
+  JellyfishBG.init('bg', { jellyfishCount: 7, particleCount: 130 });
+</script>
+</body>
+</html>
